@@ -1,0 +1,24 @@
+package com.tudou.core.zeus.common.hdfs
+
+import com.tudou.core.zeus.common.dao.SortDao
+
+
+/**
+ * Created by wanganqing on 2015/3/12.
+ */
+object HdfsUtils {
+
+  def init() {
+
+  }
+
+  /**
+   * 根据SortDao.SortTaskRow创建路径,原始路径不做删除
+   * @param row
+   * @return
+   */
+  def createTaskUpdateDataPath(row: SortDao.SortTaskRow): String = {
+    ""
+  }
+
+}

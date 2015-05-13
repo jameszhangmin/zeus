@@ -1,0 +1,61 @@
+import com.tudou.core.zeus.cms._
+import com.tudou.core.zeus.cms.EnvUtill._
+import org.junit.{Test, Before}
+
+/**
+ * Created by wanganqing on 2015/3/12.
+ */
+class ClientTest {
+  @Before def setup(): Unit = {
+    System.setProperty(EnvUtill.configFilePath, "D:\\work\\zeus-2.10\\conf.properties")
+    EnvUtill.init()
+    MemCacheUtils.init()
+  }
+
+  //注册排序任务
+  @Test def testTaskRegister(): Unit = {
+    val taskRegister = new TaskRegister("album_Task",
+      "albumId,superAlbumId,channelId",
+      "albumId,superAlbumId,channelId",
+      5000,
+      "hdfs://a01.test.spark.sh.jj.tudou.com:9100/input/mydata_100m.json",
+      null, 0)
+    ClientSort.registerTask(taskRegister)
+  }
+
+  //TODO: 请求数据更新
+  @Test def testDataRequest(): Unit = {
+    val dataRequest = new DataRequest("album_Task", false, Array("hdfs://a01.test.spark.sh.jj.tudou.com:9100/input/mydata_10.json"))
+    ClientSort.dataRequest(dataRequest)
+
+  }
+
+
+  //请求排序作业(memcache + spark)
+  @Test def testSortRequest(): Unit = {
+    val sortRequest = new SortRequest("album_Task", Array("albumId.asc", "addTimeLong.desc", "ageGroup.asc"), Array("albumId=1"), 0, 5)
+    val result = ClientSort.sortRequest(sortRequest)
+    println("请求返回大小:"+{if (result == null) {
+      0
+    } else {
+      result.size
+    }})
+    val resultTotal = ClientSort.sortRequestTotal(sortRequest)
+    println("总大小:"+resultTotal)
+  }
+
+  //请求排序作业( spark)
+  @Test def testSortRequestBySpark(): Unit = {
+    val sortRequest = new SortRequest("album_Task", Array("albumId.asc", "addTimeLong.desc", "ageGroup.asc"), Array("albumId=1"), 0, 260)
+    val result = ClientSort.sortRequestBySpark(sortRequest)
+    println(result)
+  }
+
+  //请求排序作业(memcache )
+  @Test def testSortRequestByMemcache(): Unit = {
+    val sortRequest = new SortRequest("album_Task", Array("albumId.asc", "superAlbumId.desc", "channelId.asc"), Array("albumId=1", "channelId=2"), 150, 260)
+    val result = ClientSort.sortRequestByMemcache(sortRequest)
+    println(result.size)
+  }
+
+}

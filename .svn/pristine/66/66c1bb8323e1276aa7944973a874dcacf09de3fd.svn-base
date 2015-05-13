@@ -1,0 +1,124 @@
+package com.tudou.core.zeus.common.dao
+// AUTO-GENERATED Slick data model
+/** Stand-alone Slick data model for immediate use */
+object SortDao extends {
+  val profile = scala.slick.driver.MySQLDriver
+} with SortDao
+
+/** Slick data model trait for extension, choice of backend or usage in the cake pattern. (Make sure to initialize this late.) */
+trait SortDao {
+  val profile: scala.slick.driver.JdbcProfile
+  import profile.simple._
+  import scala.slick.model.ForeignKeyAction
+  // NOTE: GetResult mappers for plain SQL are only generated for tables where Slick knows how to map the types of all columns.
+  import scala.slick.jdbc.{GetResult => GR}
+  
+  /** DDL for all tables. Call .create to execute. */
+  lazy val ddl = SortJob.ddl ++ SortTask.ddl
+  
+  /** Entity class storing rows of table SortJob
+   *  @param id Database column id DBType(INT), AutoInc, PrimaryKey
+   *  @param taskId Database column task_id DBType(INT)
+   *  @param sortFileds Database column sort_fileds DBType(TINYTEXT), Length(63,true)
+   *  @param key Database column key DBType(TINYTEXT), Length(63,true)
+   *  @param status Database column status DBType(INT), Default(Some(0))
+   *  @param isDelete Database column is_delete DBType(BIT)
+   *  @param createUserId Database column create_user_id DBType(INT), Default(None)
+   *  @param createTime Database column create_time DBType(TIMESTAMP)
+   *  @param updateTime Database column update_time DBType(TIMESTAMP)
+   *  @param extFeature Database column ext_feature DBType(TEXT), Length(16383,true), Default(None) */
+  case class SortJobRow(id: Int, taskId: Int, sortFileds: String, key: String, status: Option[Int] = Some(0), isDelete: Option[Boolean], createUserId: Option[Int] = None, createTime: Option[java.sql.Timestamp], updateTime: Option[java.sql.Timestamp], extFeature: Option[String] = None)
+  /** GetResult implicit for fetching SortJobRow objects using plain SQL queries */
+  implicit def GetResultSortJobRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Option[Int]], e3: GR[Option[Boolean]], e4: GR[Option[java.sql.Timestamp]], e5: GR[Option[String]]): GR[SortJobRow] = GR{
+    prs => import prs._
+    SortJobRow.tupled((<<[Int], <<[Int], <<[String], <<[String], <<?[Int], <<?[Boolean], <<?[Int], <<?[java.sql.Timestamp], <<?[java.sql.Timestamp], <<?[String]))
+  }
+  /** Table description of table sort_job. Objects of this class serve as prototypes for rows in queries. */
+  class SortJob(_tableTag: Tag) extends Table[SortJobRow](_tableTag, "sort_job") {
+    def * = (id, taskId, sortFileds, key, status, isDelete, createUserId, createTime, updateTime, extFeature) <> (SortJobRow.tupled, SortJobRow.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (id.?, taskId.?, sortFileds.?, key.?, status, isDelete, createUserId, createTime, updateTime, extFeature).shaped.<>({r=>import r._; _1.map(_=> SortJobRow.tupled((_1.get, _2.get, _3.get, _4.get, _5, _6, _7, _8, _9, _10)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    
+    /** Database column id DBType(INT), AutoInc, PrimaryKey */
+    val id: Column[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column task_id DBType(INT) */
+    val taskId: Column[Int] = column[Int]("task_id")
+    /** Database column sort_fileds DBType(TINYTEXT), Length(63,true) */
+    val sortFileds: Column[String] = column[String]("sort_fileds", O.Length(63,varying=true))
+    /** Database column key DBType(TINYTEXT), Length(63,true) */
+    val key: Column[String] = column[String]("key", O.Length(63,varying=true))
+    /** Database column status DBType(INT), Default(Some(0)) */
+    val status: Column[Option[Int]] = column[Option[Int]]("status", O.Default(Some(0)))
+    /** Database column is_delete DBType(BIT) */
+    val isDelete: Column[Option[Boolean]] = column[Option[Boolean]]("is_delete")
+    /** Database column create_user_id DBType(INT), Default(None) */
+    val createUserId: Column[Option[Int]] = column[Option[Int]]("create_user_id", O.Default(None))
+    /** Database column create_time DBType(TIMESTAMP) */
+    val createTime: Column[Option[java.sql.Timestamp]] = column[Option[java.sql.Timestamp]]("create_time")
+    /** Database column update_time DBType(TIMESTAMP) */
+    val updateTime: Column[Option[java.sql.Timestamp]] = column[Option[java.sql.Timestamp]]("update_time")
+    /** Database column ext_feature DBType(TEXT), Length(16383,true), Default(None) */
+    val extFeature: Column[Option[String]] = column[Option[String]]("ext_feature", O.Length(16383,varying=true), O.Default(None))
+  }
+  /** Collection-like TableQuery object for table SortJob */
+  lazy val SortJob = new TableQuery(tag => new SortJob(tag))
+  
+  /** Entity class storing rows of table SortTask
+   *  @param id Database column id DBType(INT), AutoInc, PrimaryKey
+   *  @param name Database column name DBType(VARCHAR), Length(120,true)
+   *  @param filedIdNames Database column filed_ID_Names DBType(TINYTEXT), Length(63,true)
+   *  @param fieldNames Database column field_Names DBType(TINYTEXT), Length(63,true), Default(None)
+   *  @param defaultCacheMax Database column default_Cache_max DBType(INT), Default(Some(5000))
+   *  @param fullDataPath Database column full_data_path DBType(TEXT), Length(16383,true), Default(None)
+   *  @param updateDataPath Database column update_data_path DBType(TEXT), Length(16383,true), Default(None)
+   *  @param status Database column status DBType(INT), Default(Some(0))
+   *  @param isDelete Database column is_delete DBType(BIT)
+   *  @param createUserId Database column create_user_id DBType(INT), Default(None)
+   *  @param createTime Database column create_time DBType(TIMESTAMP)
+   *  @param updateTime Database column update_time DBType(TIMESTAMP)
+   *  @param extFeature Database column ext_feature DBType(TEXT), Length(16383,true), Default(None) */
+  case class SortTaskRow(id: Int, name: String, filedIdNames: String, fieldNames: Option[String] = None, defaultCacheMax: Option[Int] = Some(5000), fullDataPath: Option[String] = None, updateDataPath: Option[String] = None, status: Option[Int] = Some(0), isDelete: Option[Boolean], createUserId: Option[Int] = None, createTime: Option[java.sql.Timestamp], updateTime: Option[java.sql.Timestamp], extFeature: Option[String] = None)
+  /** GetResult implicit for fetching SortTaskRow objects using plain SQL queries */
+  implicit def GetResultSortTaskRow(implicit e0: GR[Int], e1: GR[String], e2: GR[Option[String]], e3: GR[Option[Int]], e4: GR[Option[Boolean]], e5: GR[Option[java.sql.Timestamp]]): GR[SortTaskRow] = GR{
+    prs => import prs._
+    SortTaskRow.tupled((<<[Int], <<[String], <<[String], <<?[String], <<?[Int], <<?[String], <<?[String], <<?[Int], <<?[Boolean], <<?[Int], <<?[java.sql.Timestamp], <<?[java.sql.Timestamp], <<?[String]))
+  }
+  /** Table description of table sort_task. Objects of this class serve as prototypes for rows in queries. */
+  class SortTask(_tableTag: Tag) extends Table[SortTaskRow](_tableTag, "sort_task") {
+    def * = (id, name, filedIdNames, fieldNames, defaultCacheMax, fullDataPath, updateDataPath, status, isDelete, createUserId, createTime, updateTime, extFeature) <> (SortTaskRow.tupled, SortTaskRow.unapply)
+    /** Maps whole row to an option. Useful for outer joins. */
+    def ? = (id.?, name.?, filedIdNames.?, fieldNames, defaultCacheMax, fullDataPath, updateDataPath, status, isDelete, createUserId, createTime, updateTime, extFeature).shaped.<>({r=>import r._; _1.map(_=> SortTaskRow.tupled((_1.get, _2.get, _3.get, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13)))}, (_:Any) =>  throw new Exception("Inserting into ? projection not supported."))
+    
+    /** Database column id DBType(INT), AutoInc, PrimaryKey */
+    val id: Column[Int] = column[Int]("id", O.AutoInc, O.PrimaryKey)
+    /** Database column name DBType(VARCHAR), Length(120,true) */
+    val name: Column[String] = column[String]("name", O.Length(120,varying=true))
+    /** Database column filed_ID_Names DBType(TINYTEXT), Length(63,true) */
+    val filedIdNames: Column[String] = column[String]("filed_ID_Names", O.Length(63,varying=true))
+    /** Database column field_Names DBType(TINYTEXT), Length(63,true), Default(None) */
+    val fieldNames: Column[Option[String]] = column[Option[String]]("field_Names", O.Length(63,varying=true), O.Default(None))
+    /** Database column default_Cache_max DBType(INT), Default(Some(5000)) */
+    val defaultCacheMax: Column[Option[Int]] = column[Option[Int]]("default_Cache_max", O.Default(Some(5000)))
+    /** Database column full_data_path DBType(TEXT), Length(16383,true), Default(None) */
+    val fullDataPath: Column[Option[String]] = column[Option[String]]("full_data_path", O.Length(16383,varying=true), O.Default(None))
+    /** Database column update_data_path DBType(TEXT), Length(16383,true), Default(None) */
+    val updateDataPath: Column[Option[String]] = column[Option[String]]("update_data_path", O.Length(16383,varying=true), O.Default(None))
+    /** Database column status DBType(INT), Default(Some(0)) */
+    val status: Column[Option[Int]] = column[Option[Int]]("status", O.Default(Some(0)))
+    /** Database column is_delete DBType(BIT) */
+    val isDelete: Column[Option[Boolean]] = column[Option[Boolean]]("is_delete")
+    /** Database column create_user_id DBType(INT), Default(None) */
+    val createUserId: Column[Option[Int]] = column[Option[Int]]("create_user_id", O.Default(None))
+    /** Database column create_time DBType(TIMESTAMP) */
+    val createTime: Column[Option[java.sql.Timestamp]] = column[Option[java.sql.Timestamp]]("create_time")
+    /** Database column update_time DBType(TIMESTAMP) */
+    val updateTime: Column[Option[java.sql.Timestamp]] = column[Option[java.sql.Timestamp]]("update_time")
+    /** Database column ext_feature DBType(TEXT), Length(16383,true), Default(None) */
+    val extFeature: Column[Option[String]] = column[Option[String]]("ext_feature", O.Length(16383,varying=true), O.Default(None))
+    
+    /** Uniqueness Index over (name) (database name name) */
+    val index1 = index("name", name, unique=true)
+  }
+  /** Collection-like TableQuery object for table SortTask */
+  lazy val SortTask = new TableQuery(tag => new SortTask(tag))
+}

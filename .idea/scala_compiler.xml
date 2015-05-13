@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ScalaCompilerConfiguration">
+    <parameters>
+      <parameter value="-make:transitive" />
+      <parameter value="-dependencyfile" />
+      <parameter value="D:\work\zeus-2.10\common\target/.scala_dependencies" />
+      <parameter value="D:\work\zeus-2.10\client\target/.scala_dependencies" />
+      <parameter value="D:\work\zeus-2.10\cms\target/.scala_dependencies" />
+      <parameter value="D:\work\zeus-2.10\service\target/.scala_dependencies" />
+    </parameters>
+  </component>
+</project>

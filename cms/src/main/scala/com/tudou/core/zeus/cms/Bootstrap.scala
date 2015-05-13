@@ -1,0 +1,80 @@
+package com.tudou.core.zeus.cms
+
+import com.tudou.core.zeus.common.hdfs.HdfsUtils
+
+import com.tudou.core.zeus.common.dao.SortDaoUtils
+import com.tudou.core.zeus.common.spark.SparkUtils
+
+import akka.actor.{Props, ActorSystem}
+import akka.routing.RoundRobinRouter
+import com.tudou.core.zeus.cms._
+
+import com.tudou.core.zeus.common.dao.{SortDaoUtils, SortDao}
+import com.tudou.core.zeus.common.spark.SparkUtils
+import com.tudou.core.zeus.common.thread.ThreadUtils
+//import org.codehaus.jackson.map.ObjectMapper
+import com.fasterxml.jackson.databind.ObjectMapper
+
+
+import scala.collection.mutable.Map
+
+
+/**
+ * Created by wanganqing on 2015/3/9.
+ */
+object Bootstrap extends App {
+  private var stopMoniter = false
+  //初始化
+  init()
+  //启动
+  start()
+  //运行
+  run()
+
+  def init(): Unit = {
+    //创建环境变量
+    EnvUtill.init()
+    //创建DB连接
+    //创建Spark
+    //创建Hdfs连接
+    //创建kafka
+    //创建线程池
+    ThreadUtils.init()
+    //创建缓存
+    MemCacheUtils.init()
+  }
+
+  def start(): Unit = {
+
+  }
+
+  def run(): Unit = {
+    val nrOfWorkers = 10
+    val actorSystem = ActorSystem("DispatchCMS-ActorSystem")
+    val actorDispatch = actorSystem.actorOf(Props[DispatchActor].withRouter(RoundRobinRouter(nrOfWorkers)), name = "Dispatch")
+    val streamSortResponse = KafkaUtils.createConsumerStream[SortResponse](KafkaUtils.Topic_SortResponse)
+    ThreadUtils.submit(() => {
+      streamSortResponse.foreach(stream => {
+        stream.foreach(mam => {
+          try {
+            actorDispatch ! new ObjectMapper().readValue(mam.message().toString, classOf[SortResponse])
+          }
+          catch {
+            case e=> e.printStackTrace()
+          }
+          finally {};
+        })
+      })
+    })
+    //等待线程结束
+    while (!stopMoniter) {
+      Thread.sleep(1000)
+    }
+  }
+
+  def stop: Unit = {
+    stopMoniter = true
+  }
+
+}
+

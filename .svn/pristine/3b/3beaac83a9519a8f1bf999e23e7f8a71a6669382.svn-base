@@ -1,0 +1,47 @@
+package com.tudou.core.zeus.common.hdfs
+
+import com.tudou.core.zeus.cms.EnvUtill
+import com.tudou.core.zeus.common.dao.SortDao
+import com.typesafe.config.ConfigFactory
+import org.apache.hadoop.conf.Configuration
+import org.apache.hadoop.fs.{FileSystem, Path}
+
+
+/**
+ * Created by wanganqing on 2015/3/12.
+ */
+object HdfsUtils {
+
+  def init() {
+    System.setProperty("HADOOP_USER_NAME", "app_admin")
+
+  }
+
+
+  /**
+   * 写入HDFS文件
+   * @param filePath
+   * @param data
+   * */
+  def write(filePath: String, data: Array[Byte]): Unit = {
+    val hdfs_uri:String = EnvUtill.env("hdfs.uri")
+    val dist_path:String = EnvUtill.env("hdfs.file_path") + "/" + filePath
+    val path = new Path(dist_path)
+    val conf = new Configuration()
+    conf.set("fs.defaultFS", hdfs_uri)
+    val fs = FileSystem.get(conf)
+    val os = fs.create(path)
+    os.write(data)
+    fs.close()
+  }
+
+  /**
+   * 根据SortDao.SortTaskRow创建路径,原始路径不做删除
+   * @param row
+   * @return
+   */
+  def createTaskUpdateDataPath(row: SortDao.SortTaskRow): String = {
+    "hdfs://a01.test.spark.sh.jj.tudou.com:9100/input/mydata_102.json"
+  }
+
+}

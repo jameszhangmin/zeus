@@ -1,0 +1,44 @@
+package com.tudou.core.zeus.cms
+
+import java.io.{ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream}
+
+import kafka.utils.VerifiableProperties
+
+
+/**
+ * Created by wanganqing on 2015/3/13.
+ */
+//class DefaultDecoder(props: VerifiableProperties = null) extends Decoder[Array[Byte]] {
+//  def fromBytes(bytes: Array[Byte]): Array[Byte] = bytes
+//}
+class ObjectDecoder[T](props: VerifiableProperties = null) extends scala.AnyRef with kafka.serializer.Decoder[T] {
+  override def fromBytes(bytes: Array[Byte]): T = {
+    val inArray = new ByteArrayInputStream(bytes)
+    val inObject = new ObjectInputStream(inArray)
+    val obj = inObject.readObject().asInstanceOf[T]
+    inObject.close()
+    inArray.close()
+    obj
+  }
+}
+
+class ObjectEncoder[T](props: VerifiableProperties = null) extends scala.AnyRef with kafka.serializer.Encoder[T] {
+  def fromBytes(bytes: Array[Byte]): T = {
+    val inArray = new ByteArrayInputStream(bytes)
+    val inObject = new ObjectInputStream(inArray)
+    val obj = inObject.readObject().asInstanceOf[T]
+    inObject.close()
+    inArray.close()
+    obj
+  }
+
+  override def toBytes(t: T): Array[Byte] = {
+    val outArray = new ByteArrayOutputStream()
+    val outObject = new ObjectOutputStream(outArray)
+    outObject.writeObject(t)
+    val byteArray: Array[Byte] = outArray.toByteArray
+    outObject.close()
+    outArray.close()
+    byteArray
+  }
+}

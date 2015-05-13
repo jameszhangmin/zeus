@@ -1,0 +1,78 @@
+package com.tudou.core.zeus.common.dao
+
+import javax.sql.DataSource
+
+import org.apache.commons.dbcp.BasicDataSource
+
+
+/**
+ * Created by wanganqing on 2015/3/9.
+ * 产生对应的数据库操作文件
+ * updated by Zhang.Min 2015/04/25
+ * 修改
+ */
+object DBUtils extends App {
+  //  SourceCodeGenerator.main(
+  DBUtils.codeGen(
+    Array("scala.slick.driver.MySQLDriver", "com.mysql.jdbc.Driver", "jdbc:mysql://127.0.0.1/tudou_sort",
+      "common\\src\\main\\scala",
+      "com.tudou.core.zeus.common.dao",
+      "root", "root",
+      "SortDao", "SortDao.scala")
+  )
+
+  def codeGen(args: Array[String]) = {
+    import scala.slick.codegen.SourceCodeGenerator
+    import scala.slick.driver.JdbcProfile
+    import scala.reflect.runtime.currentMirror
+    args.toList match {
+      case slickDriver :: jdbcDriver :: url :: outputFolder :: pkg :: tail if tail.size == 0 || tail.size == 4 => {
+        val driver: JdbcProfile = {
+          val module = currentMirror.staticModule(slickDriver)
+          val reflectedModule = currentMirror.reflectModule(module)
+          val driver = reflectedModule.instance.asInstanceOf[JdbcProfile]
+          driver
+        }
+        val db = driver.simple.Database
+        val urlExt = (tail match {
+          case user :: password :: tail if tail.size == 0 || tail.size == 2 =>
+            (db.forURL(url, driver = jdbcDriver, user = user, password = password), tail)
+          case Nil => (db.forURL(url, driver = jdbcDriver), Nil)
+          case _ => throw new Exception("This should never happen.")
+        })
+        urlExt._1.withSession { implicit session => {
+          val sourceCodeGenerator = new SourceCodeGenerator(driver.createModel())
+          urlExt._2 match {
+            case container :: fileName :: nil => {
+              sourceCodeGenerator.writeToFile(slickDriver, outputFolder, pkg, container, fileName)
+            }
+            case nil => {
+              sourceCodeGenerator.writeToFile(slickDriver, outputFolder, pkg)
+            }
+            case _ => throw new Exception("This should never happen.")
+          }
+        }
+        }
+      }
+      case _ => {
+        println(scala.slick.codegen.SourceCodeGenerator.main(Array()))
+      }
+    }
+  }
+
+  val poolMap = Map[String, DataSource]()
+
+  def createMysqlDataSource(host: String, port: String, dbName: String, userName: String, password: String): DataSource = {
+    val ds = new BasicDataSource
+    ds.setDriverClassName("com.mysql.jdbc.Driver")
+    ds.setUsername(userName)
+    ds.setPassword(password)
+    ds.setMaxActive(20);
+    ds.setMaxIdle(10);
+    ds.setInitialSize(10);
+    ds.setValidationQuery("SELECT 1")
+    ds.setUrl("jdbc:mysql://" + host + ":" + port + "/" + dbName + "?useUnicode=yes&characterEncoding=utf8")
+    ds.setConnectionProperties("SET OPTION SQL_SELECT_LIMIT=DEFAULT") //mysql error 1064
+    ds
+  }
+}

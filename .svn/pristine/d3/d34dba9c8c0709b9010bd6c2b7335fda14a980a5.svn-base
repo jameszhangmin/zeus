@@ -1,0 +1,38 @@
+#kafka
+ kafka.product.metadata.broker.list=10.108.19.151:9092
+ kafka.product.request.required.acks=1
+ kafka.product.key.serializer.class=kafka.serializer.StringEncoder
+ kafka.product.serializer.class=kafka.serializer.StringEncoder
+ kafka.consumer.zk.list=10.108.19.151:2181
+ kafka.consumer.zookeeper.session.timeout.ms=400
+ kafka.consumer.zookeeper.sync.time.ms=200
+ kafka.consumer.group.id=1
+ kafka.consumer.auto.commit.interval.ms=1000
+ kafka.Topic.DataRequest=zeus_DataRequest
+ kafka.Topic.SortRequest=zeus_SortRequest
+ kafka.Topic.SortResponse=zeus_SortResponse
+ kafka.Topic.TaskRegister=zeus_TaskRegister
+ mysql.host=127.0.0.1
+ mysql.port =3306
+ mysql.dbName=tudou_sort
+ mysql.userName=root
+ mysql.password=
+ spark.appName=zeus sort
+ spark.isLocal=true
+ thread.number=10
+ xmemcached.hdservice.addr=c01.memcached.sh.hgh.tudou.com:11215
+ xmemcached.hdservice.connectionPoolSize=10
+ xmemcached.hdservice.connectTimeout=1000
+ xmemcached.hdservice.opTimeout=1000
+ xmemcached.hdservice.commandFactory=net.rubyeye.xmemcached.command.BinaryCommandFactory
+ xmemcached.hdservice.sessionLocator=net.rubyeye.xmemcached.impl.KetamaMemcachedSessionLocator
+ xmemcached.hdservice.transcoder=net.rubyeye.xmemcached.transcoders.SerializingTranscoder
+ xmemcached.hdservice.primitiveAsString=true
+ xmemcached.hdservice.bufferAllocator=net.rubyeye.xmemcached.buffer.SimpleBufferAllocator
+ xmemcached.hdservice.failureMode=false
+ #xmemcached.hdservice.weights=1,1,1,1,1,1,1,1
+ #10分钟失效
+ xmemcached.key.memCacheFailTime.minute=1
+ #key分页个数 , 用于memcache中key计算
+ client.key.countByPage =100
+
